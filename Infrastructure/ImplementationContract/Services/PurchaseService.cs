@@ -2,35 +2,6 @@
 
 public class PurchaseService(IPurchaseRepository repository,DataContext context) : IPurchaseService
 {
-    public async Task<Result<PagedResponse<IEnumerable<PurchaseReadInfo>>>> GetAllAsync(PurchaseFilter filter)
-    {
-        return await Task.Run(() =>
-        {
-            Expression<Func<Purchase, bool>> filterExpression = purchase =>
-                (filter.ProductId == null || purchase.ProductId == filter.ProductId) &&
-                (filter.InstallmentMonths == null || purchase.InstallmentMonths == filter.InstallmentMonths) &&
-                (filter.PhoneNumber == null || purchase.PhoneNumber == filter.PhoneNumber);
-
-            Result<IQueryable<Purchase>> request = repository
-                .Find(filterExpression);
-
-            if (!request.IsSuccess)
-                return Result<PagedResponse<IEnumerable<PurchaseReadInfo>>>.Failure(request.Error);
-
-            List<PurchaseReadInfo> query = request.Value!.Select(x => x.ToRead()).ToList();
-
-            int count = query.Count;
-
-            IEnumerable<PurchaseReadInfo> purchase =
-                query.Page(filter.PageNumber, filter.PageSize);
-
-            PagedResponse<IEnumerable<PurchaseReadInfo>> res =
-                PagedResponse<IEnumerable<PurchaseReadInfo>>.Create(filter.PageNumber, filter.PageSize, count, purchase);
-
-            return Result<PagedResponse<IEnumerable<PurchaseReadInfo>>>.Success(res);
-        });
-    }
-    
      public async Task<string> CreateAsync(PurchaseCreateInfo createInfo)
     {
         Product? p = await context.Products.FirstOrDefaultAsync(x => x.Id == createInfo.ProductId);
@@ -87,15 +58,5 @@ public class PurchaseService(IPurchaseRepository repository,DataContext context)
         return "Invalid product category.";
     }
 
-
-    public async Task<BaseResult> DeleteAsync(int id)
-    {
-        Result<Purchase?> res = await repository.GetByIdAsync(id);
-        if (!res.IsSuccess) return BaseResult.Failure(Error.NotFound());
-        
-        Result<int> result = await repository.DeleteAsync(id);
-        return result.IsSuccess
-            ? BaseResult.Success()
-            : BaseResult.Failure(result.Error);
-    }
+     
 }

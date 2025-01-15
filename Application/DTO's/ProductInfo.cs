@@ -29,7 +29,7 @@ public  record class ProductCreateInfo(
     string Category) : IBaseProductInfo;
 
 
-public readonly record struct ProductUpdateInfo(
+public record class ProductUpdateInfo(
     string Name,
     string Color,
     decimal Price,
