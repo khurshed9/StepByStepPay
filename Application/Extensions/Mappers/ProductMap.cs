@@ -27,7 +27,7 @@ public static class ProductMap
         };
     }
 
-    public static Product ToEntity(this Product product, ProductUpdateInfo updateInfo)
+    public static Product ToUpdate(this Product product, ProductUpdateInfo updateInfo)
     {
         product.Name = updateInfo.Name;
         product.Color = updateInfo.Color;

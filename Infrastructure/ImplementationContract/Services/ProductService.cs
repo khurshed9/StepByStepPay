@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.ImplementationContract.Services;
 
-public class ProductService(IProductRepository repository) : IProductService
+public class ProductService(IProductRepository repository,DataContext context) : IProductService
 {
     public async Task<Result<PagedResponse<IEnumerable<ProductReadInfo>>>> GetAllAsync(ProductFilter filter)
     {
@@ -54,15 +54,24 @@ public class ProductService(IProductRepository repository) : IProductService
 
     public async Task<BaseResult> UpdateAsync(int id, ProductUpdateInfo product)
     {
-        Result<Product?> res = await repository.GetByIdAsync(id);
+        try
+        {
+            Product? existingProduct = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
         
-        if(!res.IsSuccess) return BaseResult.Failure(Error.NotFound());
-
-        BaseResult result = await repository.UpdateAsync(res.Value!.ToEntity(product));
+            if(existingProduct is null)
+                return BaseResult.Failure(Error.NotFound());
+            
+            context.Products.Update(existingProduct.ToUpdate(product));
+            int res = await context.SaveChangesAsync();
         
-        return result.IsSuccess
-            ? BaseResult.Success()
-             : BaseResult.Failure(result.Error);
+            return res is 0
+                ? BaseResult.Failure(Error.InternalServerError("Data not saved!!!"))
+                : BaseResult.Success();
+        }
+        catch (Exception e)
+        {
+            return BaseResult.Failure(Error.InternalServerError(e.Message));
+        }
     }
 
     public async Task<BaseResult> DeleteAsync(int id)
