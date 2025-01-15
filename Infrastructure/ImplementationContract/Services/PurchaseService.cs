@@ -36,10 +36,14 @@ public class PurchaseService(IPurchaseRepository repository,DataContext context)
         Product? p = await context.Products.FirstOrDefaultAsync(x => x.Id == createInfo.ProductId);
         
         if(p == null)
-            return $"Product with {createInfo.ProductId} ID doesn't exist";
-
+            return $"Product with {createInfo.ProductId} ID doesn't exist";                           
+ 
         decimal totalAmount = p.Price;
         decimal perMonth = Math.Round(p.Price / createInfo.InstallmentMonths, 2);
+        string message = $"{p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\n" +
+                         $"PerMonth: {perMonth}\n" +
+                         $"Category: {p.Category}\nPhoneNumber: {createInfo.PhoneNumber}";
+        
         if (p?.Category == Category.SmartPhone)
         {
             if (createInfo.InstallmentMonths > 9)
@@ -47,12 +51,10 @@ public class PurchaseService(IPurchaseRepository repository,DataContext context)
                 int extraMonth = createInfo.InstallmentMonths - 9;
                 decimal percentage = extraMonth * 3;
                 totalAmount = totalAmount + (totalAmount * percentage / 100);
-                return $"SmartPhone: {p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\nPhoneNumber: {createInfo.PhoneNumber}\nTotalAmount: {totalAmount}\nCategory: {p.Category}\nPerMonth: {perMonth}";
+                return $"{Category.SmartPhone}: {message}\nTotalAmount: {totalAmount}";
             }
             else
-            {
-                return $"SmartPhone: {p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\nPhoneNumber: {createInfo.PhoneNumber}\nTotalAmount: {totalAmount}\nCategory: {p.Category}\nPerMonth: {perMonth}";
-            }
+                return $"{Category.SmartPhone}: {message}\nTotalAmount: {totalAmount}";
         }
         
         else if (p?.Category == Category.Computer)
@@ -62,12 +64,10 @@ public class PurchaseService(IPurchaseRepository repository,DataContext context)
                 int extraMonth = createInfo.InstallmentMonths - 12;
                 decimal percentage = extraMonth * 4;
                 totalAmount = totalAmount + (totalAmount * percentage / 100);
-                return $"Computer: {p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\nPhoneNumber: {createInfo.PhoneNumber}\nTotalAmount: {totalAmount}\nCategory: {p.Category}\nPer Month: {perMonth}";
+                return $"{Category.Computer}: {message}\nTotalAmount: {totalAmount}";
             }
             else
-            {
-                return $"Computer: {p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\nPhoneNumber: {createInfo.PhoneNumber}\nTotalAmount: {totalAmount}\nCategory: {p.Category}\nPer Month: {perMonth}";
-            }
+                return $"{Category.Computer}: {message}\nTotalAmount: {totalAmount}";
         }
 
         else if (p?.Category == Category.Television)
@@ -77,12 +77,10 @@ public class PurchaseService(IPurchaseRepository repository,DataContext context)
                 int extraMonth = createInfo.InstallmentMonths - 18;
                 decimal percentage = extraMonth * 5;
                 totalAmount = totalAmount + (totalAmount * percentage / 100);
-                return $"Television: {p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\nPhoneNumber: {createInfo.PhoneNumber}\nTotalAmount: {totalAmount}\nCategory: {p.Category}\nPer Month: {perMonth}";
+                return $"{Category.Television}: {message}\nTotalAmount: {totalAmount}";
             }
             else
-            {
-                return $"Television: {p.Name}\nInstallmentMonths: {createInfo.InstallmentMonths}\nPhoneNumber: {createInfo.PhoneNumber}\nTotalAmount: {totalAmount}\nCategory: {p.Category}\nPer Month: {perMonth}";
-            }
+                return $"{Category.Television}: {message}\nTotalAmount: {totalAmount}";
         }
         await repository.AddAsync(createInfo.ToEntity());
 
