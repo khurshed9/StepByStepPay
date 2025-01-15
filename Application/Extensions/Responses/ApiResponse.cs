@@ -1,5 +1,6 @@
 ﻿namespace Application.Extensions.Responses;
 
+
 public class ApiResponse<T>
 {
     public bool IsSuccess { get; init; }

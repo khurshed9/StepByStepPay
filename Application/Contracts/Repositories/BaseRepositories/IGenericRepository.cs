@@ -1,5 +1,6 @@
 ﻿namespace Application.Contracts.Repositories.BaseRepositories;
 
+
 public interface IGenericRepository<T> : 
     IGenericAddRepository<T>,
     IGenericDeleteRepository<T>,

@@ -1,8 +1,9 @@
 ﻿namespace Infrastructure.ImplementationContract.Services;
 
-public class PurchaseService(IPurchaseRepository repository,DataContext context) : IPurchaseService
+public class PurchaseService(DataContext context) : IPurchaseService
 {
-     public async Task<string> CreateAsync(PurchaseCreateInfo createInfo)
+
+    public async Task<string> CreateAsync(PurchaseCreateInfo createInfo)
     {
         Product? p = await context.Products.FirstOrDefaultAsync(x => x.Id == createInfo.ProductId);
         
@@ -53,7 +54,7 @@ public class PurchaseService(IPurchaseRepository repository,DataContext context)
             else
                 return $"{Category.Television}: {message}\nTotalAmount: {totalAmount}";
         }
-        await repository.AddAsync(createInfo.ToEntity());
+        await context.AddAsync(createInfo.ToEntity());
 
         return "Invalid product category.";
     }

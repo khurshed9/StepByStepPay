@@ -1,5 +1,6 @@
 ﻿namespace Application.Extensions.Mappers;
 
+
 public static class ProductMap
 {
     public static ProductReadInfo ToRead(this Product product)

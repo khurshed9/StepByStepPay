@@ -2,6 +2,7 @@
 
 public static class PurchaseMap
 {
+    
     public static PurchaseReadInfo ToRead(this Purchase purchase)
     {
         return new PurchaseReadInfo(

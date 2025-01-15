@@ -1,5 +1,6 @@
 ﻿namespace Application.Extensions.Responses;
 
+
 public record PagedResponse<T> : BaseFilter
 {
     public int TotalPages { get; init; }

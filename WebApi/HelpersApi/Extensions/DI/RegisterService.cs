@@ -29,7 +29,6 @@ public static class RegisterService
         
         //registration repository
         builder.Services.AddScoped<IProductRepository, ProductRepository<Product>>();
-        builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository<Purchase>>();
         
         //registration services
         builder.Services.AddScoped<IProductService, ProductService>();
