@@ -76,12 +76,22 @@ public class ProductService(IProductRepository repository,DataContext context) :
 
     public async Task<BaseResult> DeleteAsync(int id)
     {
-        Result<Product?> res = await repository.GetByIdAsync(id);
-        if (!res.IsSuccess) return BaseResult.Failure(Error.NotFound());
+        // Result<Product?> res = await repository.GetByIdAsync(id);
+        // if (!res.IsSuccess) return BaseResult.Failure(Error.NotFound());
+
+        // Result<int> result = await repository.DeleteAsync(id);
+        // return result.IsSuccess
+        //     ? BaseResult.Success()
+        //     : BaseResult.Failure(result.Error);
+
+
+        Product res = await context.Products.FirstOrDefaultAsync(x => x.Id == id); ;
+        if (res is null)
+            throw new KeyNotFoundException($"Vehicle with ID {id} not found");
+
+        context.Products.Remove(res);
+        int result = context.SaveChanges();
+        return result == 0 ? BaseResult.Failure(Error.BadRequest()) : BaseResult.Success();
         
-        Result<int> result = await repository.DeleteAsync(id);
-        return result.IsSuccess
-            ? BaseResult.Success()
-            : BaseResult.Failure(result.Error);
     }
 }
