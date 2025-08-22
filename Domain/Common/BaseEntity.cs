@@ -8,7 +8,7 @@ public abstract class BaseEntity
     
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.MinValue;
     
-    public DateTimeOffset DeletedAt { get; set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset? DeletedAt { get; set; } = null;
     
     public bool IsDeleted { get; set; }
     
