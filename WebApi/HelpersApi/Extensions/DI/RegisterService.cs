@@ -5,6 +5,20 @@ public static class RegisterService
 
     public static IServiceCollection AddServices(this WebApplicationBuilder builder)
     {
+
+        // CORS
+
+        // ✅ Добавляем CORS
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+        });
+
+        // CORS
+
         builder.Services.AddEndpointsApiExplorer();
         
         //swagger
@@ -41,6 +55,11 @@ public static class RegisterService
     {
         try
         {
+
+            // ✅ Подключаем CORS
+            app.UseCors("AllowAll");
+            // ✅ Подключаем CORS
+
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseExceptionHandler("/error");
